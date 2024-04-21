@@ -16,7 +16,10 @@ export default function SignIn() {
     e.preventDefault();
     try {
       //TODO: Proxy API
-      const response = await login({username: username, password: password});
+      const response = await login({
+        username,
+        password
+      });
       if (response?.access_token) {
         console.log("Signed in successfully");
         localStorage.setItem('access_token', response.access_token);
