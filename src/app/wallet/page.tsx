@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { tokenTransfer } from "../../services/coin-api.service";
 
 export default function StablecoinWallet() {
   const [recipientAddress, setRecipientAddress] = useState("");
@@ -46,7 +47,7 @@ export default function StablecoinWallet() {
     fetchStablecoinData();
   }, []);
 
-  const handleSendStablecoins = (e: any) => {
+  const handleSendStableCoins = async (e: any) => {
     e.preventDefault();
     if (
       !recipientAddress ||
@@ -59,13 +60,17 @@ export default function StablecoinWallet() {
     }
     // Reset error state
     setError("");
-    // Send stablecoins logic goes here
-    console.log("Sending stablecoins to", recipientAddress, "Amount:", amount);
-    // Clear form inputs
-    setRecipientAddress("");
-    setAmount("");
-    // Close popup form (if applicable)
-    // closePopupForm();
+    // Send stable coins logic goes here
+    console.log("Sending stable coins to", recipientAddress, "Amount:", amount);
+    const access_token = localStorage.getItem('access_token');
+    const response = await tokenTransfer({
+      token: access_token,
+      amount: amount,
+      toAddress: recipientAddress,
+    });
+    if(response){
+      setIsPopupOpen(false);
+    }
   };
 
   return (
@@ -158,7 +163,7 @@ export default function StablecoinWallet() {
                     )}
                     <button
                       type="button"
-                      onClick={handleSendStablecoins}
+                      onClick={handleSendStableCoins}
                       className="w-full inline-flex justify-center px-4 py-2 bg-primary-600 border border-transparent rounded-md font-semibold text-white hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 sm:text-sm"
                     >
                       Send
