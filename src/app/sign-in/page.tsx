@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from 'next/navigation'
-
+import { login } from '../../services/coin-api.service'
 
 export default function SignIn() {
   const [username, setUsername] = useState("");
@@ -14,24 +14,12 @@ export default function SignIn() {
 
   const handleSignIn = async (e: any) => {
     e.preventDefault();
-    console.log("~ SignIn ~ username:", username);
-    console.log("~ SignIn ~ password:", password);
-
     try {
       //TODO: Proxy API
-      const response = await fetch(`${process.env.NEXT_PUBLIC_COIN_API_URL}/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          password,
-        }),
-      });
-
-      if (response.ok) {
+      const response = await login({username: username, password: password});
+      if (response?.access_token) {
         console.log("Signed in successfully");
+        localStorage.setItem('access_token', response.access_token);
         router.push('/wallet')
       } else {
         //TODO: Handle sign in error

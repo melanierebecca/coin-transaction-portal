@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from 'next/navigation'
 import Link from "next/link";
+import { register } from '../../services/coin-api.service'
 
 export default function SignUp() {
   const [username, setUsername] = useState("");
@@ -22,20 +23,13 @@ export default function SignUp() {
 
     try {
       //TODO: Register API call
-      const response = await fetch(`${process.env.NEXT_PUBLIC_COIN_API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          name,
-          email,
-          password,
-        }),
-      });
-      console.log(response)
-      if (response.ok) {
+      const response  = await register({
+        username: username,
+        name: name,
+        email: email,
+        password: password
+      })
+      if (response?.username) {
         //TODO: Handle successful sign up
         console.log("Signed up successfully");
         router.push('/sign-in')
